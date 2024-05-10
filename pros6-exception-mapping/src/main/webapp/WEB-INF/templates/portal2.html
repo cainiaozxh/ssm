@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>ajax请求对应的异常映射</title>
+    <script th:src="@{/script/vue.js}"></script>
+    <script th:src="@{/script/axios.min.js}"></script>
+</head>
+<body>
+<h3>异常处理:非Ajax请求</h3>
+<a th:href="@{/product/save5}">非ajax请求</a>
+<h3>异常处理:Ajax请求</h3>
+<div id="app">
+    <a href="javascript:void(0)" @click="ajaxException">ajax请求</a>
+</div>
+</body>
+<script>
+    let vm = new Vue({
+        el: "#app",
+        data: {
+
+        },
+        methods: {
+            axiosPost(url,data) {
+                return axios({
+                    method:"post",
+                    url:url,
+                    data:data
+                })
+            },
+            ajaxException() {
+                this.axiosPost("[[@{/product/save5}]]")
+                .then((response) => {
+                    //发生一异常走then
+                    //对于Ajax请求,出现了异常,跳转到异常页面并返回,要在then中来接收到,而不是catch中
+                    //因为我们需要就收的是异常信息,而不是异常处理页面的额源代码
+                    console.log("发生了异常走then");
+                    console.log(response.data);
+                })
+                .catch((error) => {
+                    //没有发生异常走catch
+                    console.log("没有发生异常走catch");
+                    console.log(error.response.data);
+                })
+                .finally(() => {
+                    console.log("ajax请求最终结束...");
+                })
+            }
+        }
+    });
+</script>
+</html>

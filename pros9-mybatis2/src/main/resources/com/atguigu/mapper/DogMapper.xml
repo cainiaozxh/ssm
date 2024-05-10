@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.mapper.DogMapper">
+    <!--
+    resultType说明:主要功能是封装实体对象的,要求其中的属性和字段必须要一一对应,才能自动封装
+    resultMap:mybatis提供了一个属性resultMap 可能根据自身需求 自定义映射关系
+    -->
+
+    <select id="findAll" resultMap="dogRM">
+        SELECT * FROM dog
+    </select>
+    <!--
+    2.准备自定义映射的结构
+    属性介绍
+    id = "dogRM" 唯一标识符
+    type = "" 封装的实体对象
+    自定义映射:
+    表中的主键最好标识,使用<id></id>标签
+    column:实际表示的是结果集的字段信息,而不是表的字段信息,因为字段可以起别名,sql中查出来的结果集的名字是啥,这块就写啥
+    result 除了主键之外的其他字段信息
+    -->
+    <resultMap id="dogRM" type="dog" autoMapping="true">
+        <id property="dogId" column="dog_id"  javaType="Integer"/>
+        <result property="dogName" column="dog_name" javaType="String"/>
+        <result property="age" column="age" javaType="Integer"/>
+        <result property="deptId" column="dept_id" javaType="Integer"/>
+    </resultMap>
+
+    <select id="findOneToOne_1" resultMap="oneDogRM">
+        SELECT
+            dog.*,dept.dept_name
+        FROM
+            dog
+                LEFT JOIN dept ON dog.dog_id = dept.dept_id;
+    </select>
+    <resultMap id="oneDogRM" type="dog">
+        <id property="dogId" column="dog_id" javaType="Integer"/>
+        <!--单独封装Dept的数据-->
+        <result property="dept.deptId" column="dept_id" javaType="Integer"/>
+        <result property="dept.deptName" column="dept_name" javaType="String"/>
+    </resultMap>
+
+    <!--
+    封装方式2:特殊标签封装
+    如果需要进行一对一封装则使用特定标签 association
+    固定用法:
+        association 必须配合javaType的属性
+    理解: association 可以理解为嵌套的resultMap标签
+    规则说明:
+    如果进行查询时没有association标签,则mybatis可以自动实现映射
+    但是如果添加了该标签,mybatis则不能自动映射
+    则需要配合autoMapping="true"自动映射
+    -->
+
+    <select id="findOneToOne_2" resultMap="oneDogRM2">
+        SELECT
+            dog.*,dept.dept_name
+        FROM
+            dog
+                LEFT JOIN dept ON dog.dog_id = dept.dept_id;
+    </select>
+    <resultMap id="oneDogRM2" type="dog" autoMapping="true">
+        <id property="dogId" column="dog_id" javaType="Integer"/>
+        <association property="dept" javaType="Dept" autoMapping="true">
+            <id column="dept_id" property="deptId" javaType="Integer"/>
+        </association>
+    </resultMap>
+
+    <select id="findOneToOne_3" resultMap="oneDogRM3">
+        SELECT
+            dog_id,dog_name,age,dept_id
+        FROM
+            dog
+    </select>
+    <resultMap id="oneDogRM3" type="dog" autoMapping="true">
+        <id property="dogId" column="dog_id" javaType="Integer"/>
+        <association property="dept" javaType="Dept" column="dept_id" select="findDept"/>
+    </resultMap>
+
+    <select id="findDept" resultType="dept">
+        select dept_name
+        from dept
+        where dept_id = #{dept_id}
+    </select>
+
+</mapper>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!--配置父容器-->
+    <context:component-scan base-package="com.atguigu">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+        <context:exclude-filter type="regex" expression="com.atguigu.ssm.entity.*"/>
+        <context:exclude-filter type="regex" expression="com.atguigu.ssm.interceptor.*"/>
+    </context:component-scan>
+
+    <!--配置数据源-->
+    <context:property-placeholder location="classpath:jdbc.properties"/>
+    <bean id="druidDataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="${jdbc.driverClass}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+    </bean>
+    <!--事物管理器-->
+    <bean id="dataSourceTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="druidDataSource"/>
+    </bean>
+    <!--开启基于注解的声明式事务
+    false 有接口使用jdk动态代理 没有接口使用cglib动态代理
+    true 有没有接口都是用cglib动态代理
+    -->
+    <tx:annotation-driven transaction-manager="dataSourceTransactionManager" proxy-target-class="false"/>
+
+    <!--配置切面-->
+
+    <!--整合mybatis-->
+    <bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!--配置数据源-->
+        <property name="dataSource" ref="druidDataSource"/>
+        <!--指定*Mapper.xml文件映射,如果xml文件和mapper接口在同一个包下则可以省略
+        这里扫描的是*Mapper.xml文件
+        -->
+        <property name="mapperLocations" value="classpath:com/atguigu/ssm/mapper/*Mapper.xml"/>
+        <!--实体类类型别名
+        这里扫描的是实体类,用于对实体类的全限定名起别名,指定Type类型
+        -->
+        <property name="typeAliasesPackage" value="com.atguigu.ssm.entity"/>
+
+        <!--配置全局setting
+            1 驼峰命名 2 懒加载
+        -->
+        <property name="configuration">
+            <bean class="org.apache.ibatis.session.Configuration">
+                <!--开启驼峰命名映射-->
+                <property name="mapUnderscoreToCamelCase" value="true"/>
+                <!--开启懒加载-->
+                <property name="lazyLoadingEnabled" value="true"/>
+            </bean>
+        </property>
+
+        <!--配置分页插件
+            pageHelper
+        -->
+        <property name="plugins">
+            <array>
+                <bean class="com.github.pagehelper.PageInterceptor">
+                    <property name="properties">
+                        <props>
+                            <!--设置reasonable为true 表示将页码进行合理化的修正,页码的有效范围:1总页数-->
+                            <prop key="reasonable">true</prop>
+                            <!--数据库方言:同样都是sql语句,拿到不同数据库中,在语法上会有差异
+                                默认情况下,按照MYSQL作为数据库方言来运行
+                            -->
+                            <prop key="helperDialect">mysql</prop>
+                        </props>
+                    </property>
+                </bean>
+            </array>
+        </property>
+    </bean>
+
+    <!--配置mapper扫描器
+    这里扫描的是mapper接口
+    -->
+    <bean id="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.atguigu.ssm.mapper"/>
+    </bean>
+    <!--拦截器-->
+
+    <!--转换器-->
+
+    <!--配置异常映射-->
+
+    <!--配置文件上传解析器-->
+</beans>

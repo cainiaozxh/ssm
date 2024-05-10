@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>电影列表</title>
+    <!--错误类型-->
+    <!--<script th:src="@{/script/vue.js}"/>-->
+    <style type="text/css">
+        h3{
+            text-align: center;
+        }
+        table#table1{
+            margin:10px auto;
+            width: 60%;
+            border: 1px solid black;
+        }
+        table#table1 tr th,td {
+            border: 1px solid black;
+            text-align: center;
+        }
+        .beige{
+            background-color: beige;
+        }
+        .white{
+            background-color: white;
+        }
+    </style>
+    <script type="text/javascript" th:src="@{/script/vue.js}"></script>
+</head>
+<body>
+<h3>电影列表</h3>
+<table id="table1">
+    <thead>
+    <tr>
+        <th>电影编号</th>
+        <th>电影名称</th>
+        <th>电影价格</th>
+        <th>status.index</th>
+        <th>status.count</th>
+        <th>status.odd</th>
+        <th>status.even</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${#lists.isEmpty(movieList)}">
+        <td colspan="8">
+            对不起,米钱没有一部要放映的电影,欢迎持续关注.
+        </td>
+    </tr>
+    <tr th:if="${movieList!=null && movieList.size()>0}"
+        th:each="movie:${movieList}"
+        th:class="${movieStat.odd?'beige':'white'}">
+        <td th:text="${movie.movieId}"></td>
+        <td th:text="${movie.movieName}"></td>
+        <td th:text="${movie.moviePrice}"></td>
+        <td th:text="${movieStat.index}"></td>
+        <td th:text="${movieStat.count}"></td>
+        <td th:text="${movieStat.odd}"></td>
+        <td th:text="${movieStat.even}"></td>
+        <!--<td>
+            <a th:href="@{/movie/deleteMovieById(movieId=${movie.movieId})}">删除1</a>
+            &lt;!&ndash;
+            href="javascript:void(0)" 阻止默认的跳转行为
+            confirmDelete([[${movie.movieId}]]) thymeleaf往vue里面传参
+            &ndash;&gt;
+            <a href="javascript:void(0)" th:onclick="confirmDelete([[${movie.movieId}]])">删除2</a>
+            <a th:href="@{/movie/getMovieById(movieId=${movie.movieId})}">修改</a>
+        </td>-->
+        <td>
+            <!--删除-->
+            <!--<a th:href="@{|/movie/deleteMovieById/${movie.movieId}|}">删除1</a>
+            <a href="javascript:void(0)" th:onclick="confirmDelete([[${movie.movieId}]])">删除2</a>-->
+            <!--修改-->
+            <a th:href="@{|/movie/getMovie/${movie.movieId}|}">修改1</a>
+            <a th:href="@{/movie/getMovie/}+${movie.movieId}">修改2</a>
+            <!--删除-->
+            <a th:href="@{|/movie/delete/${movie.movieId}|}" @click="deleteMovie">删除1</a>
+            <a th:href="@{|/movie/delete/${movie.movieId}|}" @click.prevent="confirmDeleteMovie">删除2</a>
+        </td>
+    </tr>
+    </tbody>
+    <tfoot>
+    <tr>
+        <td colspan="8">
+            <a th:href="@{/movie/toAdd}">添加电影信息</a>
+        </td>
+    </tr>
+    </tfoot>
+</table>
+
+<!--添加通用表单-->
+<form id="form1" method="post">
+    <input type="hidden" name="_method" value="delete"/>
+</form>
+</body>
+<script>
+    let vm = new Vue({
+        el: "#table1",
+        data: {
+
+        },
+        methods: {
+            deleteMovie(event) {
+                //获取通用表单
+                var myForm = document.getElementById("form1");
+                //修改表单的提交地址
+                myForm.action = event.target.href;
+                //提交表单
+                myForm.submit();
+                //阻止a标签的默认跳转行为
+                event.preventDefault();
+            },
+            confirmDeleteMovie(event) {
+                var flag = window.confirm("您确定要删除该电影么?")
+                if (flag) {
+                    //获取通用表单
+                    var myForm = document.getElementById("form1");
+                    //修改表单的提交地址
+                    myForm.action = event.target.href;
+                    //提交表单
+                    myForm.submit();
+                }
+            }
+        }
+    });
+</script>
+</html>

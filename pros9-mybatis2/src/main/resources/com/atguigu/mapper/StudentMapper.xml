@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.mapper.StudentMapper">
+
+    <select id="findAll_1" resultMap="studentRM1">
+        SELECT
+            s.s_id,s.s_name,s_age,t.t_id,t.t_name,t.t_age
+        FROM
+            student s
+                LEFT JOIN t_s ON s.s_id = t_s.s_id
+                LEFT JOIN teacher t ON t.t_id = t_s.t_id
+    </select>
+
+    <resultMap id="studentRM1" type="Student" autoMapping="true">
+        <id property="sId" column="s_id"/>
+        <collection property="teachers" ofType="Teacher" autoMapping="true">
+            <id property="tId" column="t_id"/>
+        </collection>
+    </resultMap>
+
+    <select id="findAll_2" resultMap="studentRM2">
+        SELECT
+            s.s_id,s.s_name,s_age,t.t_id,t.t_name,t.t_age
+        FROM
+            student s
+                LEFT JOIN t_s ON s.s_id = t_s.s_id
+                LEFT JOIN teacher t ON t.t_id = t_s.t_id
+    </select>
+    <resultMap id="studentRM2" type="Student" autoMapping="true">
+        <id property="sId" column="s_id"/>
+        <collection property="teachers" ofType="Teacher" autoMapping="true" resultMap="tsRM2"/>
+    </resultMap>
+    <resultMap id="tsRM2" type="Teacher">
+        <id property="tId" column="t_id"/>
+    </resultMap>
+
+</mapper>

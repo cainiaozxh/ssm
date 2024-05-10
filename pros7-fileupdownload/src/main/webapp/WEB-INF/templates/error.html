@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>error页面</title>
+</head>
+<body>
+<p th:errors="${product.productDate}">商品日期错误</p>
+<p th:errors="${product.productPrice}">商品价格错误</p>
+<p th:errors="${product.address}">产地错误</p>
+<p th:errors="${product.email}">邮箱错误</p>
+</body>
+</html>

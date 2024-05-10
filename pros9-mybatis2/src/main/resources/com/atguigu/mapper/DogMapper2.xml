@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.mapper.DogMapper2">
+
+    <cache eviction="LRU"
+           flushInterval="50000"
+           size="512"
+           readOnly="True"></cache>
+
+    <insert id="saveDog" useGeneratedKeys="true" keyProperty="dogId" keyColumn="dog_id">
+        INSERT INTO dog
+        VALUES (null, #{dogName}, #{age}, #{deptId})
+    </insert>
+
+    <select id="findAllDog" resultType="Dog">
+        SELECT
+            dog_id my_dog_id,
+            dog_name my_dog_name,
+            age my_age,
+            dept_id my_dept_id
+        FROM
+            dog
+    </select>
+
+    <select id="findAllDogRM" resultMap="dogRM1">
+        select
+            dog_id my_dog_id,
+            dog_name my_dog_name,
+            age my_age,
+            dept_id my_dept_id
+        from
+            dog
+    </select>
+
+    <!--
+    属性介绍:
+        id = "dogRM1" 唯一标识符
+        type="" 蜂虎在那个的实体对象
+    自定义映射:
+        表中的书简最好标识 <id> 标签
+        column: 实际表示的是 结果集的字段信息,而不是表的本身的字段信息,查询时,字段可以起别名
+        result: 除了主键之外的其他字段信息
+    -->
+    <resultMap id="dogRM1" type="Dog">
+        <id property="dogId" column="my_dog_id"/>
+        <result property="dogName" column="my_dog_name"/>
+        <result property="age" column="my_age"/>
+        <result property="deptId" column="my_dept_id"/>
+    </resultMap>
+
+    <select id="findDogOneToOne_1" resultMap="dogRM2_1">
+        SELECT
+            dog.*,dept.dept_name
+        FROM
+            dog
+                LEFT JOIN dept ON dog.dept_id = dept.dept_id
+    </select>
+
+    <resultMap id="dogRM2_1" type="Dog" autoMapping="true">
+        <id property="dogId" column="dog_id"/>
+        <association property="dept" javaType="Dept" autoMapping="true">
+            <id property="deptId" column="dept_id"/>
+        </association>
+    </resultMap>
+    
+    <select id="findDogOneToOne_2" resultMap="dogRM2_2">
+        SELECT
+            dog.*,dept.dept_name
+        FROM
+            dog
+                LEFT JOIN dept ON dog.dept_id = dept.dept_id
+    </select>
+    
+    <resultMap id="dogRM2_2" type="Dog">
+        <id property="dogId" column="dog_id"/>
+        <result property="dept.deptId" column="dept_id"/>
+        <result property="dept.deptName" column="dept_name"/>
+    </resultMap>
+
+</mapper>

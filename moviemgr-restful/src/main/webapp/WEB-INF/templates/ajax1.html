@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>原生ajax请求</title>
+    <script th:src="@{/script/vue.js}"></script>
+    <script th:src="@{/script/axios.min.js}"></script>
+</head>
+<body>
+<div id="app">
+    <h1>{{message}}</h1>
+    <form th:action="@{/}" method="post">
+        电影编号: <input type="text" name="movieId" v-model="movie.movieId" @blur="verifyMovie">
+        电影名: <input type="text" name="movieName" v-model="movie.movieName">
+        <!--<input type="button" value="获取电影信息">-->
+    </form>
+</div>
+<h2>返回json数据</h2>
+<div id="div02"></div>
+</body>
+<script>
+    let vm = new Vue({
+        el: "#app",
+        data: {
+            message:"原生ajax获取电影信息",
+            movie:{
+                movieId:"",
+                movieName:""
+            },
+            respdata:""
+        },
+        methods: {
+            verifyMovie() {
+                //获取ajax引擎对象
+                var xhr = new XMLHttpRequest();
+                //监听ajax引擎状态,监听是加你,调用函数
+                xhr.onreadystatechange = function() {
+                    //ajax的响应码为200,readState 表示请求已经完成,且响应已经就绪,且响应的是200,找到了目标资源
+                    if (xhr.status === 200 && xhr.readyState === 4) {
+                        console.log(xhr.responseText);
+                        this.respdata = xhr.responseText;
+                        var div02 = document.getElementById("div02");
+                        div02.innerHTML = this.respdata;
+                    }
+                };
+                //发送ajax请求
+                xhr.open("GET", "movie/getMovieJson?movieId="+this.movie.movieId,true);
+                //如果是post请求,则将请求数据放入send()函数中
+                xhr.send();
+            }
+        }
+    });
+</script>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>员工列表带分页</title>
+    <script th:src="@{/script/vue.js}"></script>
+    <script th:src="@{/script/axios.min.js}"></script>
+</head>
+<body>
+<h3>员工列表带分页</h3>
+<table width="60%" border="1px" cellspacing="0">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>NAME</th>
+        <th>SALARY</th>
+        <th>status.index</th>
+        <th>status.even</th>
+        <th>OPERATION</th>
+    </tr>
+    </thead>
+    <tbody th:if="${pageInfo.size} == 0">
+    <tr>
+        <td colspan="5">没有员工</td>
+    </tr>
+    <tr>
+        <td colspan="5">
+            <a th:href="@{/emp/page/add}">添加员工</a>
+        </td>
+    </tr>
+    </tbody>
+    <tbody th:if="${pageInfo.size} != 0">
+        <tr th:each="emp,empStatu:${pageInfo.list}" th:class="${empStatu.even?'white':'aliceblue'}">
+            <td th:text="${emp.empId}"></td>
+            <td th:text="${emp.empName}"></td>
+            <td th:text="${emp.empSalary}"></td>
+            <td th:text="${empStatu.index}"></td>
+            <td th:text="${empStatu.even}"></td>
+            <td>
+                <a href="#">修改</a>
+                <a href="#">删除</a>
+            </td>
+        </tr>
+    <tr>
+        <td align="center" colspan="10">
+            <!--上一页-->
+            <span th:if="${pageInfo.hasPreviousPage}">
+                <a th:href="@{/employee/get/1}">首页</a>
+                <a th:href="@{|/employee/get/${pageInfo.prePage}|}">上一页</a>
+            </span>
+
+            <!--当前页-->
+            <span th:each="pageNum:${pageInfo.navigatepageNums}">
+                <a th:if="${pageNum != pageInfo.pageNum }"
+                   th:href="@{|/employee/get/${pageNum}|}"
+                   th:text="${pageNum}"/>
+                <span th:if="${pageNum == pageInfo.pageNum}"
+                      th:text="|[${pageNum}]|"/>
+            </span>
+
+            <!--下一页-->
+            <span th:if="${pageInfo.hasNextPage}">
+                <a th:href="@{|/employee/get/${pageInfo.nextPage}|}">下一页</a>
+                <a th:href="@{|/employee/get/${pageInfo.pages}|}">末页</a>
+            </span>
+
+            <!--共多少条记录,多少页数-->
+            显示 <span th:text="${pageInfo.startRow}"/> 到 <span th:text="${pageInfo.endRow}"/> 共
+            <span th:text="${pageInfo.size}"/> 条数据 共<span th:text="${pageInfo.pages}"/> 页
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a th:href="@{/page/toAdd}">添加员工</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+<script>
+
+</script>
+</html>

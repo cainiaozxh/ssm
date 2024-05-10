@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:姓名="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script th:src="@{/script/vue.js}"></script>
+    <script th:src="@{/script/axios.min.js}"></script>
+</head>
+<body>
+<h3>修改员工</h3>
+<form th:action="@{/emp/updateEmp}" method="post">
+    编号: <input type="text" name="empId" th:value="${employee.empId}" onfocus="this.blur()"/><br>
+    姓名: <input type="text" name="empName" th:value="${employee.empName}"/><br>
+    薪资: <input type="text" name="empSalary" th:value="${employee.empSalary}"/><br>
+    <input type="submit" value="提交">
+</form>
+</body>
+</html>

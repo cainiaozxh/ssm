@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.redis.mapper.EmployeeMapper">
+    <select id="findAll" resultType="com.atguigu.redis.entity.Employee">
+        SELECT emp_id,emp_name,emp_salary
+        FROM employee
+    </select>
+
+</mapper>

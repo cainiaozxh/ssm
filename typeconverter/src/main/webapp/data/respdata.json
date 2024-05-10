@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "message": "成功",
+  "data": {
+    "items": [
+      {
+        "name": "牛魔王",
+        "skill": "蛮黄之怒",
+        "age": 800
+      },
+      {
+        "name": "红孩儿",
+        "skill": "喷火",
+        "age": 500
+      },
+      {
+        "name": "蜈蚣精",
+        "skill": "放毒",
+        "age": 200
+      }
+    ]
+  }
+}

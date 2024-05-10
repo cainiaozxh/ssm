@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.mapper.DeptMapper">
+
+    <!--一对多封装1-->
+    <select id="findAll2" resultMap="deptRM">
+        SELECT dept.dept_id,dept.dept_name,dog.dog_id,dog.dog_name,dog.age
+        FROM dept
+                 LEFT JOIN dog
+                           ON dept.dept_id = dog.dept_id
+    </select>
+    <resultMap id="deptRM" type="Dept" autoMapping="true">
+        <id property="deptId" column="dept_id"/>
+        <collection property="dogList" ofType="Dog" autoMapping="true">
+            <id property="dogId" column="dog_id"/>
+        </collection>
+    </resultMap>
+
+    <!--一对多封装2-->
+    <select id="findAll2_2" resultMap="deptRM2">
+        SELECT dept.dept_id,dept.dept_name,dog.dog_id,dog.dog_name,dog.age
+        FROM dept
+                 LEFT JOIN dog
+                           ON dept.dept_id = dog.dept_id
+    </select>
+    <resultMap id="deptRM2" type="Dept" autoMapping="true">
+        <id property="deptId" column="dept_id"/>
+        <collection property="dogList" ofType="Dog" resultMap="dogRM2" autoMapping="true"/>
+    </resultMap>
+    <resultMap id="dogRM2" type="Dog">
+        <id column="dog_id" property="dogId"/>
+    </resultMap>
+
+    <!--一对多封装3-->
+    <select id="findAll2_3" resultMap="deptRM3">
+        SELECT dept.dept_id,dept.dept_name,dog.dog_id,dog.dog_name,dog.age
+        FROM dept
+                 LEFT JOIN dog
+                           ON dept.dept_id = dog.dept_id
+    </select>
+
+    <resultMap id="deptRM3" type="Dept" autoMapping="true">
+        <id property="deptId" column="dept_id"/>
+        <collection property="dogList" ofType="Dog" select="findDog" column="dept_id" autoMapping="true"></collection>
+    </resultMap>
+    <select id="findDog" resultType="Dog">
+        select dog_id,dog_name,age,dept_id from dog
+        where dept_id = #{deptId}
+    </select>
+
+</mapper>

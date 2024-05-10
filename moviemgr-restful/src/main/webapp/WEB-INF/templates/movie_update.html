@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>修改电影</title>
+</head>
+<body>
+<h3>修改电影</h3>
+<form th:action="@{/movie/update}" method="post">
+    <input type="hidden" name="_method" value="put"/>
+    <!--电影编号: <input type="text" name="movieId" th:value="${originalMovie.movieId}" readonly unselectable="on"/><br>-->
+    电影编号: <input type="text" name="movieId" th:value="${originalMovie.movieId}" onfocus="this.blur()"/><br>
+    电影名字: <input type="text" name="movieName" th:value="${originalMovie.movieName}"/><br>
+    票价: <input type="text" name="moviePrice" th:value="${originalMovie.moviePrice}"/><br>
+    <input type="submit" value="提交"/>
+</form>
+</body>
+</html>

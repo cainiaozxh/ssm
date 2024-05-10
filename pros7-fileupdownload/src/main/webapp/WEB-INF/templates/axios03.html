@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>使用promise发送ajax请求</title>
+    <style>
+        form .respinfo {
+            border-width: 0;
+            color: red;
+        }
+    </style>
+    <script th:src="@{/script/vue.js}"></script>
+    <script th:src="@{/script/axios.min.js}"></script>
+</head>
+<body>
+<div id="app">
+    <h1>{{message}}</h1>
+    <form th:action="@{/ajax/checkUser}" method="post">
+        用户名: <input type="text" name="username" v-model="person.username" @blur="verify()">
+        <button type="button" @click="verify()">验证用户名</button>
+        <input class="respinfo" type="text" id="myres"><br><br>
+        密 码: <input type="password" name="pwd"><br><br>
+        邮 件: <input type="text" name="email"><br><br>
+        <button type="submit">用户注册</button>
+    </form>
+</div>
+
+<h3>返回json数据2</h3>
+<div id="div02"></div>
+
+<h3>返回json数据3</h3>
+<div id="div03"></div>
+
+<h3>返回json数据4</h3>
+<div id="div04"></div>
+</body>
+<script>
+    let vm = new Vue({
+        el: "#app",
+        data: {
+            message:"使用promise发送ajax请求",
+            person: {
+                username:""
+            },
+            respdata:""
+        },
+        methods: {
+            post(url,data) {
+                return new Promise(((resolve, reject) => {
+                    ajax({
+                        url:url,
+                        data:data,
+                        type:"post",
+                        success(data,message,xhr) {
+                            resolve(data);
+                        },
+                        error(error) {
+                            reject(error);
+                        }
+                    })
+                }));
+            },
+            get(url,data) {
+                return new Promise(((resolve, reject) => {
+                    ajax({
+                        url:url,
+                        data:data,
+                        type:"get",
+                        success(data, message, xhr) {
+                            resolve(data);
+                        },
+                        error(error) {
+                            reject(error);
+                        }
+                    })
+                }));
+            },
+            verify() {
+                this.get("checkUser",{
+                    "username": this.person.username
+                }).then((data) => {
+                    console.log("Promise第一次ajax");
+                    console.log(data);
+                    this.respdata = data;
+                    var div02 = document.getElementById("div02");
+                    div02.innerHTML = this.respdata;
+                    //发送第二次ajax请求
+                    return this.get("checkUser",{
+                        "username":"李四"
+                    });
+                }).then((data) => {
+                    console.log("Promise第二次Ajax请求");
+                    console.log(data);
+                    this.respdata = data;
+                    var div03 = document.getElementById("div03");
+                    div03.innerHTML = this.respdata;
+
+                    //发送第三次ajax请求
+                    return this.get("checkUser", {
+                        "username":"王五"
+                    });
+                }).then((data) => {
+                    console.log("Promise第三次Ajax请求");
+                    console.log(data);
+                    this.respdata = data;
+                    var div04 = document.getElementById("div04");
+                    div04.innerHTML = this.respdata;
+
+                }).catch((error) => {
+                    console.log("error = ",error);
+                })
+            }
+        }
+    });
+
+</script>
+</html>

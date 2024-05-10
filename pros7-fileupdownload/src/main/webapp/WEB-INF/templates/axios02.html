@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>复习ajax请求</title>
+    <style>
+        form .respinfo {
+            border-width: 0;
+            color: red;
+        }
+    </style>
+    <script th:src="@{/script/vue.js}"></script>
+    <script th:src="@{/script/axios.min.js}"></script>
+</head>
+<body>
+<div id="app">
+    <h1>{{message}}</h1>
+    <form th:action="@{/ajax/checkUser}" method="post">
+        用户名: <input type="text" name="username" v-model="person.username" @blur="verify()">
+        <button type="button" @click="verify()">验证用户名</button>
+        <input class="respinfo" type="text" id="myres"><br><br>
+        密 码: <input type="password" name="pwd"><br><br>
+        邮 件: <input type="text" name="email"><br><br>
+        <button type="submit">用户注册</button>
+    </form>
+</div>
+
+<h3>返回json数据</h3>
+<div id="div02"></div>
+</body>
+<script>
+    let vm = new Vue({
+        el:"#app",
+        data:{
+            message: "使用原生ajax发送异步请求",
+            person:{
+                username:"",
+
+            },
+            respdata:"",
+        },
+        methods:{
+            verify() {
+                //获取ajax引擎对象
+                var xhr = new XMLHttpRequest();
+                //监听ajax引擎状态,监听事件,调用函数
+                xhr.onreadystatechange = function () {
+                    //ajax请求的状态为4,表示请求已经完成,且响应已经准备就绪
+                    //ajax引擎的响应状态,200表示响应正确,不是404,500等错误
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        this.respdata = xhr.responseText;
+                        console.log(this.respdata);
+                        var div02 = document.getElementById("div02");
+                        div02.innerHTML = this.respdata;
+                    }
+                };
+                //发送ajax请求
+                xhr.open("GET","checkUser?username="+this.person.username,true);
+                //如果是post请求,则将请求数据放入send()函数中
+                xhr.send();
+            }
+        }
+    })
+</script>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>员工列表</title>
+    <script th:src="@{/script/vue.js}"></script>
+    <script th:src="@{/script/axios.min.js}"></script>
+</head>
+<body>
+<h3>员工列表</h3>
+<div id="app">
+    <table border="1px" cellspacing="0">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>NAME</th>
+            <th>SALARY</th>
+            <th>status.even</th>
+            <th>OPERATION</th>
+        </tr>
+        </thead>
+        <!--如果为true则显示-->
+        <tbody th:if="${#lists.isEmpty(empList)}">
+        <tr>
+            <td colspan="5">没有员工</td>
+        </tr>
+        <tr>
+            <td colspan="5">
+                <a th:href="@{/emp/page/add}">添加员工</a>
+            </td>
+        </tr>
+        </tbody>
+        <!--如果为false则显示-->
+        <tbody th:if="${!#lists.isEmpty(empList)}">
+        <tr th:each="emp,empStatu:${empList}" th:class="${empStatu.even?'white':'azure'}">
+            <td th:text="${emp.empId}"></td>
+            <td th:text="${emp.empName}"></td>
+            <td th:text="${emp.empSalary}"></td>
+            <td th:text="${empStatu.even}"></td>
+            <td>
+                <a th:href="@{/emp/getEmpById(empId = ${emp.empId})}">修改</a>
+                <a href="javascript:void(0)" th:onclick = "confirmDelete([[${emp.empId}]])">删除</a>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="5">
+                <a th:href="@{/emp/page/add}">添加员工</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+<script>
+
+    function confirmDelete(empId) {
+        var flag = window.confirm("您确定要删除该员工吗?[empId = " + empId + "]");
+        if (flag) {
+            window.location.href="[[@{/emp/deleteEmp}]]" + "?empId=" + empId;
+        }
+    }
+
+    let vm = new Vue({
+        el: "#app",
+        data: {
+
+        },
+        methods: {
+            confirmDelete(empId) {
+                var flag = window.confirm("您确定要删除该员工吗?[empId = " + empId + "]");
+                if (flag) {
+                    window.location.href="[[@{/emp/deleteEmp}]]" + "?empId=" + empId;
+                }
+            }
+        }
+    });
+</script>
+</html>

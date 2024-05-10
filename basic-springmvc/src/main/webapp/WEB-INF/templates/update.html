@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>回显表单数据</title>
+</head>
+<body>
+<h2>回显表单数据</h2>
+<h3>回显输入框的数据</h3>
+<!--<form th:action="@{/save/tiger}" method="post">
+    老虎的id: <input type="text" name="tigerId" th:value="${tiger1.tigerId}"/><br>
+    老虎的名字: <input type="text" name="tigerName" th:value="${tiger1.tigerName}"/><br>
+    老虎的工资: <input type="text" name="tigerSalary" th:value="${tiger1.tigerSalary}"/><br>
+</form>-->
+<hr>
+<h2>回显带选择功能的标签</h2>
+<h3>回显单选按钮</h3>
+<form th:action="@{/save/paige}" method="post">
+    paigeId: <input type="text" th:value="${paige.paigeId}"/><br>
+    paigeName: <input type="text" th:value="${paige.paigeName}"/><br>
+    season: <input type="radio" name="submitValue"
+                   th:each="season: ${seasonList}"
+                   th:value="${season.submitValue}"
+                   th:text="${season.showForUserValue}"
+                   th:checked="${season.submitValue == paige.season.submitValue}"/>
+</form>
+
+<h3>回显下拉列表</h3>
+<form th:action="@{/save/paige}" method="post">
+    paigeId: <input type="text" th:value="${paige.paigeId}"/><br>
+    paigeName: <input type="text" th:value="${paige.paigeName}"/><br>
+    season: <select name="submitValue">
+        <option th:each="season :${seasonList}" th:value="${season.submitValue}"
+                th:text="${season.showForUserValue}"
+                th:selected="${season.submitValue == paige.season.submitValue}"/>
+    </select>
+</form>
+
+</body>
+</html>

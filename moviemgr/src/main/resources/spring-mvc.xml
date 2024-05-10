@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop" xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/aop https://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!--扫描指定的包及其子包的bean到ioc容器中-->
+    <context:component-scan base-package="com.atguigu.controller,com.atguigu.service,com.atguigu.mapper"/>
+
+    <!--配置数据源-->
+    <context:property-placeholder location="classpath:jdbc.properties"/>
+
+    <bean id="druidDataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="${jdbc.driverClass}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+    </bean>
+
+    <!--配置jdbcTemplate-->
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="druidDataSource"/>
+    </bean>
+    <!--配置事务管理器-->
+    <bean id="dataSourceTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="druidDataSource"/>
+    </bean>
+    <!--开启基于注解的声明式事务-->
+    <!--
+    1 开启基于注解的声明式事务
+    2 proxy-target-class="false"
+      有接口 使用jdk动态代理
+      没有接口  使用cglib动态代理
+      ="true" 两种情况都使用cglib动态代理
+    -->
+    <tx:annotation-driven transaction-manager="dataSourceTransactionManager" proxy-target-class="false"/>
+
+    <!--
+    配置切面
+    用注解@EnableAspectJAutoProxy
+    -->
+    <aop:aspectj-autoproxy/>
+
+    <!--配置视图解析器-->
+    <!--配置Thymeleaf视图解析器-->
+    <bean id="thymeleafViewResolver" class="org.thymeleaf.spring5.view.ThymeleafViewResolver">
+        <property name="order" value="1"/>
+        <property name="characterEncoding" value="UTF-8"/>
+        <property name="templateEngine">
+            <bean class="org.thymeleaf.spring5.SpringTemplateEngine">
+                <!--spring引入内部bean,配置模板解析器-->
+                <property name="templateResolver">
+                    <bean class="org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver">
+                        <!--视图前缀-->
+                        <property name="prefix" value="/WEB-INF/templates/"/>
+                        <!--视图后缀-->
+                        <property name="suffix" value=".html"/>
+                        <property name="templateMode" value="HTML5"/>
+                        <property name="characterEncoding" value="UTF-8"/>
+                    </bean>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <!--开启mvc三个注解-->
+    <mvc:annotation-driven/>
+    <mvc:default-servlet-handler/>
+
+    <!--将视图控制器,放在视图解析器之后
+    在视图解析器之后才能对view-name进行拼接,视图前缀,视图后缀 /WEB-INF/templates/portal.html
+    -->
+    <mvc:view-controller path="/" view-name="portal"/>
+    <mvc:view-controller path="/index.jsp" view-name="portal"/>
+    <mvc:view-controller path="/movie/toAdd" view-name="movie_add"/>
+</beans>

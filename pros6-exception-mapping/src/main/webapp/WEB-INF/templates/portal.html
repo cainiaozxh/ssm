@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+    <script th:src="@{/script/vue.js}"></script>
+    <script th:src="@{/script/axios.min.js}"></script>
+</head>
+<body>
+<h3>异常处理:非ajax请求</h3>
+<a th:href="@{/product/save5}">非ajax请求</a>
+<h3>异常处理:ajax请求</h3>
+<div id="app">
+    <a href="javascript:void(0)" @click="ajaxException">ajax请求</a>
+</div>
+</body>
+<script>
+    let vm = new Vue({
+        el: "#app",
+        data: {
+
+        },
+        methods: {
+            axiosPost(url,data) {
+                return new axios({
+                    method:"post",
+                    url:url,
+                    data:data
+                });
+            },
+            ajaxException() {
+                this.axiosPost("[[@{/product/save5}]]")
+                    .then((response) => {
+                    //对于ajax请求,出现了异常,跳到异常页面并返回,要在then中来接收,而不是catch中
+                    //如果发生了异常,走这里
+                    console.log(response.data);
+                }).catch((error) => {
+                    //没有发生异常,走这里
+                    console.log("error = ",error);
+                }).finally(() => {
+                    console.log("ajax请求最终结束...");
+                })
+
+            }
+        }
+    });
+    
+</script>
+</html>

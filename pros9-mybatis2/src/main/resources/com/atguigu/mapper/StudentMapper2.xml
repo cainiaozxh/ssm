@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.mapper.StudentMapper2">
+
+    <cache eviction="LRU"
+           flushInterval="50000"
+           size="512"
+           readOnly="True"></cache>
+
+    <insert id="saveStudent" useGeneratedKeys="true" keyProperty="sId" keyColumn="s_id">
+        INSERT INTO student
+        VALUES
+            ( NULL, #{sName}, #{sAge} );
+    </insert>
+
+    <select id="findAllStudent_1" resultMap="studentRM_1">
+        SELECT
+            t.*,
+            s.*
+        FROM
+            student s
+                LEFT JOIN t_s ON s.s_id = t_s.s_id
+                LEFT JOIN teacher t ON t_s.t_id = t.t_id
+    </select>
+    <resultMap id="studentRM_1" type="Student" autoMapping="true">
+        <id property="sId" column="s_id"/>
+        <collection property="teachers" ofType="Teacher" autoMapping="true">
+            <id property="tId" column="t_id"/>
+        </collection>
+     </resultMap>
+
+    <select id="findAllStudent_2" resultMap="studentRM_2">
+        SELECT
+            t.*,
+            s.*
+        FROM
+            student s
+                LEFT JOIN t_s ON s.s_id = t_s.s_id
+                LEFT JOIN teacher t ON t_s.t_id = t.t_id
+    </select>
+    <resultMap id="studentRM_2" type="Student" autoMapping="true">
+        <id property="sId" column="s_id"/>
+        <collection property="teachers" ofType="Teacher" autoMapping="true" resultMap="teacher_1"/>
+    </resultMap>
+    <resultMap id="teacher_1" type="Teacher">
+        <id property="tId" column="t_id"/>
+    </resultMap>
+
+</mapper>

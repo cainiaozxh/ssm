@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>访问成功</title>
+</head>
+<body>
+<h1>访问成功</h1>
+<h3>从域中获取数据</h3>
+<p th:text="${msg}"></p>
+<p th:text="${session.user}"></p>
+<p th:text="${application.count}"></p>
+<p th:text="${application.count2}"></p>
+<hr>
+<h3>从属性域中获取数据</h3>
+Model: <input type="text" th:value="${requestScopeMessageModel}"/><br>
+Map: <input type="text" th:value="${requestScopeMessageMap}"/><br>
+ModelMap: <input type="text" th:value="${requestScopeMessageModelMap}"/><br>
+ModelAndView: <input type="text" th:value="${modelAndViewMessage}"/><br>
+</body>
+</html>

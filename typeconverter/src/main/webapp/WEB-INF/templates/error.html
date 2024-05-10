@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>error页面</title>
+</head>
+<body>
+<!--需要类名小写,当实体类是Product时候就是product.email
+    当实体类是Product02的时候,就是product02.email
+-->
+<!--<p th:errors="${product.productDate}">商品日期错误</p>-->
+<!--<p th:errors="${product.productPrice}">商品价格错误</p>-->
+<!--<p th:errors="${product.address}">产地错误</p>-->
+<!--<p th:errors="${product.email}">邮箱错误</p>-->
+
+<!--实体类是Product02的时候,就是product02.email-->
+<p th:errors="${product02.productDate}">商品日期错误</p>
+<p th:errors="${product02.productPrice}">商品价格错误</p>
+<p th:errors="${product02.address}">产地错误</p>
+<p th:errors="${product02.email}">邮箱错误</p>
+</body>
+</html>

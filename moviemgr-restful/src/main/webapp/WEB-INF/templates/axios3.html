@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>axios发送ajax请求</title>
+    <script th:src="@{/script/vue.js}"></script>
+    <script th:src="@{/script/axios.min.js}"></script>
+</head>
+<body>
+<div id="app">
+    <h1>{{message}}</h1>
+    <form th:action="@{/}" method="post">
+        电影编号: <input type="text" name="movieId" v-model="movie.movieId">
+        电影名: <input type="text" name="movieName" v-model="movie.movieName">
+        电影价格: <input type="number" name="moviePrice" v-model="movie.moviePrice" @blur="verifyMovie">
+    </form>
+</div>
+<h2>返回json数据</h2>
+<div id="div02"></div>
+</body>
+<script>
+    let vm = new Vue({
+        el: "#app",
+        data: {
+            message:"使用promise发送ajax请求",
+            movie: {
+                movieId:"",
+                movieName: "",
+                moviePrice: ""
+            },
+            respdata:""
+        },
+        methods: {
+            axiosPost(url,data) {
+                return new axios({
+                   method: "post",
+                   url: url,
+                   data: data
+                });
+            },
+            verifyMovie() {
+                this.axiosPost("movie/getMovieJson2", {
+                    "movieId":this.movie.movieId,
+                    "movieName": this.movie.movieName,
+                    "moviePrice": this.movie.moviePrice
+                }).then((response) => {
+                    console.log("axios发送第一次的ajax请求");
+                    console.log(response);
+                    var div02 = document.getElementById("div02");
+                    this.respdata = response.data;
+                    div02.innerHTML = JSON.stringify(this.respdata);
+                    return this.axiosPost("movie/getMovieJson2",{
+                        "movieId":this.movie.movieId
+                    });
+                }).then((response) => {
+                    console.log("axios发送第二次的ajax请求");
+                    console.log(response);
+                    return this.axiosPost("movie/getMovieJson2",{
+                        "movieId":this.movie.movieId,
+                        "movieName": this.movie.movieName,
+                        "moviePrice": this.movie.moviePrice
+                    });
+                }).then((response) => {
+                    console.log("axios发送第三次的ajax请求");
+                    console.log(response);
+                }).catch((error) => {
+                    console.log("error = ",error);
+                })
+            }
+        }
+    });
+</script>
+</html>

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+    <!--
+    尽量使用<script></script>类型的标签,不要使用<script/>这样类型的标签,浏览器解析的时候
+    可能会解析异常.
+    -->
+    <script th:src="@{/script/vue.js}"></script>
+    <script th:src="@{/script/axios.min.js}"></script>
+</head>
+<body>
+<h3>Hello,world!!!</h3>
+<a th:href="@{/emp/}">前往员工列表</a>
+<br>
+<a th:href="@{/employee/get/1}">前往员工列表2</a>
+</body>
+</html>

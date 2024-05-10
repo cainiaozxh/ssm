@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.mapper.EmployeeMapper">
+    <!--3.resultType 只有查询操作有该属性. 内容:实体对象的包路径写法-->
+    <select id="findAll" resultType="com.atguigu.redis.entity.Employee">
+        SELECT emp_id, emp_name, emp_salary
+        FROM t_emp
+    </select>
+    <insert id="saveEmp">
+        INSERT INTO t_emp
+        VALUES (null, #{empName}, #{empSalary});
+    </insert>
+
+    <select id="selectEmployeeByName" resultType="employee">
+        SELECT emp_id, emp_name, emp_salary
+        FROM t_emp
+        where emp_name = #{empName}
+    </select>
+
+    <select id="orderEmployeeByColumn" resultType="employee">
+        SELECT emp_id, emp_name, emp_salary
+        FROM t_emp
+        order BY ${orderName}
+    </select>
+
+    <select id="selectEmployeeByMap" resultType="employee">
+        SELECT emp_id, emp_name, emp_salary
+        FROM t_emp
+        WHERE emp_name = #{empName}
+          AND emp_salary = #{empSalary}
+    </select>
+
+    <select id="selectEmployeeByAnno" resultType="employee">
+        SELECT emp_id, emp_name, emp_salary
+        FROM t_emp
+        WHERE emp_name = #{empName}
+          AND emp_salary = #{empSalary}
+    </select>
+
+    <select id="selectEmployeeByEntity" resultType="employee">
+        SELECT emp_id, emp_name, emp_salary
+        FROM t_emp
+        WHERE emp_name = #{empName}
+          AND emp_salary = #{empSalary}
+    </select>
+
+    <select id="selectEmployeeById" resultType="employee">
+        select emp_id, emp_name, emp_salary
+        from t_emp
+        where emp_id = #{empId}
+    </select>
+
+    <!--
+        动态获取主键信息,规则介绍:
+        1.useGenerateKeys="true" 是否回显主键自增数据
+        2.keyColumn="" 指定数据库表主键自增的字段(主键自增的列名),如果表中只有一个主键,则可以省略该属性
+        3.keyProperty 由于用户新增一般传递的是Employee对象,多以自增的主键会动态的绑定到Employee对象中,只要指定和自增主键所
+                      匹配的字段的属性就行
+    -->
+    <insert id="saveEmpGetId" useGeneratedKeys="true" keyColumn="emp_id" keyProperty="empId">
+        INSERT INTO t_emp
+        VALUES (null, #{empName}, #{empSalary});
+    </insert>
+
+    <update id="updateEmployee" useGeneratedKeys="true" keyColumn="emp_id" keyProperty="empId">
+        update t_emp
+        set emp_name=#{empName},emp_salary=#{empSalary}
+        where emp_id = #{empId}
+    </update>
+
+    <delete id="deleteEmployeeById">
+        delete from t_emp
+        where emp_id = #{empId}
+    </delete>
+
+    <select id="selectEmpBySalary" resultType="employee">
+        select emp_id,emp_name,emp_salary
+        from t_emp
+        where emp_salary >= #{minSalary}
+        and emp_salary &lt;= #{maxSalary}
+        order by emp_salary
+    </select>
+
+    <select id="selectEmpBySalary2" resultType="employee">
+        select emp_id,emp_name,emp_salary
+        from t_emp
+        where emp_salary between #{minSalary} and #{maxSalary}
+        order by emp_salary
+    </select>
+
+    <select id="selectEmpBySalary3" resultType="employee">
+        <![CDATA[
+        SELECT emp_id,emp_name,emp_salary
+            from t_emp
+                where emp_salary >= #{minSalary}
+                    and emp_salary <= #{maxSalary}
+        order by emp_salary
+        ]]>
+    </select>
+
+    <select id="selectEmployeeMap" resultType="map">
+        select emp_id,emp_name,emp_salary
+        from t_emp
+        where emp_id = #{empId}
+    </select>
+
+    <select id="selectEmployeeMapNameSalary" resultType="map">
+        select emp_id,emp_name,emp_salary
+        from t_emp
+        where emp_id > #{empId}
+    </select>
+
+    <select id="selectEmployeeMapMap" resultType="map">
+        select emp_id, emp_name, emp_salary
+        from t_emp
+        where emp_id >= #{empId}
+        order by emp_salary
+    </select>
+
+    <select id="selectEmployeeByLike" resultType="employee">
+        select emp_id, emp_name, emp_salary
+        from t_emp
+        where emp_name like "%"#{name}"%"
+        order by emp_salary
+    </select>
+
+    <!--
+    问题描述:
+    1.在进行批量操作时,可以使用${} 动态获取数据.如果使用了${} 必须注意sql注入问题
+    2.使用#号取值时,利用foreach标签查询数据
+        关键语法说明:
+        参数传递的是数组:     collection="array"
+        参数传递的是List集合  collection="list"
+        参数传递的是Map集合   collection="map中的key"
+
+        foreach标签说明:
+        open=""  循环开始标签
+        close="" 循环结束标签
+        index="" 当前遍历的下标
+        item="" 定义循环遍历的变量 就是循环遍历中的数据
+        separator 每次遍历之后的分隔符
+    -->
+    <select id="selectEmployees" resultType="employee">
+        select emp_id, emp_name, emp_salary
+        from t_emp
+        where emp_id in
+        <foreach collection="array" open="(" close=")" item="id" separator=",">
+            #{id}
+        </foreach>
+        order by emp_salary
+    </select>
+
+    <select id="selectEmployeesList" resultType="employee">
+        select emp_id, emp_name, emp_salary
+        from t_emp
+        where emp_id in (
+            <foreach collection="list" item="id" separator=",">
+                #{id}
+            </foreach>
+            )
+        order by emp_salary
+    </select>
+
+    <!--
+    collection="ids" map.get("ids) 真正遍历的是list集合
+    -->
+    <select id="selectEmployeesMap" resultType="employee">
+        select emp_id, emp_name, emp_salary
+        from t_emp
+        where emp_id in (
+            <foreach collection="ids" item="id" separator=",">
+                #{id}
+            </foreach>
+            )
+    </select>
+
+    <!--
+    知识点:
+        有时候用户查询的条件可能有多个,也可能有一个,
+        要求:根据对象中不为null的属性进行条件拼接
+    标签用法:
+        <where>标签: 去除where后边多余的一个链接条件 and/or/where
+        <if test="id != null && id > 10">if标签是心啊业务判断
+    -->
+    <select id="selectEmployeeByWhere" resultType="employee">
+        select emp_id, emp_name, emp_salary
+        from t_emp
+        <where>
+            <if test="empId != null">emp_id = #{empId}</if>
+            <if test="empName != null">emp_name = #{empName}</if>
+            <if test="empSalary != null">emp_salary = #{empSalary}</if>
+        </where>
+    </select>
+
+    <!--
+    规则:set标签可以去除多余的1个逗号
+    -->
+    <update id="updateEmployeeBySet" useGeneratedKeys="true"
+            keyColumn="emp_id" keyProperty="empId">
+        update t_emp
+        <set>
+            <if test="empName != null">emp_name =#{empName},</if>
+            <if test="empSalary != null">emp_salary =#{empSalary}</if>
+        </set>
+        where emp_id = #{empId}
+    </update>
+
+    <select id="selectChoose" resultType="employee">
+        select emp_id,emp_name,emp_salary
+        from t_emp
+        <where>
+            <choose>
+                <when test="empId != null">emp_id = #{empId}</when>
+                <when test="empName != null">emp_name = #{empName}</when>
+                <otherwise>emp_salary = #{empSalary}</otherwise>
+            </choose>
+        </where>
+        order by emp_salary
+    </select>
+</mapper>

@@ -1,0 +1,73 @@
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app>
+  <display-name>Archetype Created Web Application</display-name>
+
+  <!--解决表单中文乱码-->
+  <filter>
+    <filter-name>characterEncodingFilter</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <!--设置编码格式为urf-8-->
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+    <!--设置请求的编码格式为 utf-8,true表示编码格式同encoding-->
+    <init-param>
+      <param-name>forceRequestEncoding</param-name>
+      <param-value>true</param-value>
+    </init-param>
+    <!--设置响应的格式utf-8,true表示编码格式同encoding-->
+    <init-param>
+      <param-name>forceResponseEncoding</param-name>
+      <param-value>true</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>characterEncodingFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <!--定义一个过滤器,将Post请求转换为put,delete请求,必须在CharacterEncodingFilter之后
+  因为,HiddenHttpMethodFilter中会有request.getParameter()方法,获取前端请求参数
+  -->
+  <filter>
+    <filter-name>hiddenHttpMethodFilter</filter-name>
+    <filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>hiddenHttpMethodFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+
+  <!--配置SpringMVC中负责处理请求的核心Servlet,也被成为SpringMVC的前端控制器-->
+  <servlet>
+    <servlet-name>dispatcherServlet</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+
+    <!--
+    1.通过初始化参数指定web项目配置文件的位置
+    2.如果不记得contextConfigLocation配置项的名称,可以在DispatcherServlet的父类FrameworkServlet中查找
+    3.使用classpath:表示这个路径从项目编译后的根路径(target/production/目录下查找)
+    -->
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>classpath:spring-mvc.xml</param-value>
+    </init-param>
+
+    <!-- 作为框架的核心组件，在启动过程中有大量的初始化操作要做，这些操作放在第一次请求时才执行非常不恰当 -->
+    <!-- 我们应该将DispatcherServlet设置为随Web应用一起启动 -->
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>dispatcherServlet</servlet-name>
+
+    <!-- 对DispatcherServlet来说，url-pattern有两种方式配置 -->
+    <!-- 方式一：配置“/”，表示匹配整个Web应用范围内所有请求。这里有一个硬性规定：不能写成“/*”。只有这一个地方有这个特殊要求，以后我们再配置Filter还是可以正常写“/*”。 -->
+    <!-- 方式二：配置“*.扩展名”，表示匹配整个Web应用范围内部分请求 -->
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+</web-app>

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>添加电影</title>
+</head>
+<body>
+<h3>添加电影</h3>
+<!--<form th:action="@{/movie/addMovie}" method="post">-->
+<form th:action="@{/result/add}" method="post">
+    电影编号: <input type="text" name="movieId"><br>
+    电影名字: <input type="text" name="movieName"><br>
+    票价: <input type="number" step="0.01" name="moviePrice"><br>
+    <input type="submit" value="提交"/>
+</form>
+</body>
+</html>

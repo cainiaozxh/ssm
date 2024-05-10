@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>改进ajax请求-Promise</title>
+    <script th:src="@{/script/vue.js}"></script>
+    <script th:src="@{/script/axios.min.js}"></script>
+    <script th:src="@{/script/jquery-3.6.0.min.js}"></script>
+</head>
+<body>
+<div id="app">
+    <h1>{{message}}</h1>
+    <form th:action="@{/}" method="post">
+        电影编号: <input type="text" name="movieId" v-model="movie.movieId" @blur="verifyMovie">
+        电影名: <input type="text" name="movieName" v-model="movie.movieName">
+    </form>
+</div>
+<h2>返回json数据</h2>
+<div id="div02"></div>
+</body>
+<script>
+    let vm = new Vue({
+        el: "#app",
+        data: {
+            message:"使用promise发送ajax请求",
+            movie: {
+                movieId:"",
+                movieName: ""
+            },
+            respdata:""
+        },
+        methods: {
+            get(url,data) {
+                return new Promise(((resolve, reject) => {
+                    $.ajax({
+                        url:url,
+                        data:data,
+                        type:"get",
+                        success(data,message,xhr) {
+                            resolve(data);
+                        },
+                        error(error) {
+                            reject(error);
+                        }
+                    })
+                }));
+            },
+            post(url,data) {
+                return new Promise(((resolve, reject) => {
+                    $.ajax({
+                        url: url,
+                        data: data,
+                        type: "post",
+                        success(data, message, xhr) {
+                            resolve(data);
+                        },
+                        error(error) {
+                            reject(error);
+                        }
+                    })
+                }));
+            },
+            verifyMovie() {
+                this.get("movie/getMovieJson", {
+                    "movieId": this.movie.movieId
+                }).then((data) => {
+                    console.log("Promise第一次ajax");
+                    console.log(data);
+                    //拿到的是json对象,需要转换为json串
+                    this.respdata = data;
+                    var div02 = document.getElementById("div02");
+                    div02.innerHTML = JSON.stringify(this.respdata);
+                    return this.get("movie/getMovieJson",{
+                        movieId: "m14"
+                    });
+                }).then((data) => {
+                    console.log("Promise第二次ajax");
+                    console.log(data);
+                    return this.get("movie/getMovieJson",{
+                        "movieId":"m01"
+                    });
+                }).then((data) => {
+                    console.log("Promise第三次ajax");
+                    console.log(data);
+                }).catch((error) => {
+                    console.log(error);
+                })
+            }
+        }
+    });
+
+</script>
+</html>

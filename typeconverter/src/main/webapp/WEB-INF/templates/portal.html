@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+</head>
+<body>
+<h3>自动类型转换</h3>
+<form th:action="@{/product/save}" method="post">
+    生产日期: <input type="text" name="productDate" value="1992-10-15 17:15:06:111"/><br>
+    产品价格: <input type="text" name="productPrice" value="111,222,333.444"/><br>
+    生产地址: <input type="text" name="address" value="河北省,石家庄市,崇礼县"/><br>
+    联系邮箱: <input type="text" name="email" value="123@qq.com"/><br>
+    <button type="submit">保存</button>
+</form>
+<h3>自动类型转换2</h3>
+<form th:action="@{/product/save2}" method="post">
+    生产日期: <input type="text" name="productDate" value="1992-10-15 17:15:06:111"/><br>
+    产品价格: <input type="text" name="productPrice" value="111,222,333,444"/><br>
+    生产地址: <input type="text" name="address" value="河北省,石家庄市,崇礼县"/><br>
+    联系邮箱: <input type="text" name="email" value="123@qq.com"/><br>
+    <button type="submit">保存</button>
+</form>
+</body>
+</html>

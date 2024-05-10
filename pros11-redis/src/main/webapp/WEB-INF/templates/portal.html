@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+    <!--引入外部包-->
+    <script th:src="@{/script/axios.min.js}"></script>
+    <script th:src="@{/script/jquery-3.6.0.min.js}"></script>
+    <script th:src="@{/script/vue.js}"></script>
+</head>
+<body>
+<h1>IPHONE 15 Pro Max !!! 1元秒杀 ！！！</h1>
+<div id="app">
+    <form id="msform" th:action="@{/prod/doseckill}" enctype="application/x-www-form-urlencoded">
+        <input type="hidden" id="prodid" name="prodid" value="0101"/>
+        <input type="button" id="msbtn" name="msbtn" @click="seckill()" v-bind:disabled="isDisabled" value="秒杀点我"/>
+    </form>
+</div>
+</body>
+<script>
+    let vm = new Vue({
+        el: "#app",
+        data: {
+            isDisabled:false
+        },
+        methods: {
+            axiosPost(url,data) {
+                return new axios({
+                    method:"post",
+                    url:url,
+                    data:data
+                })
+            },
+            axiosPostParams(url,params) {
+                return new axios({
+                    method:"post",
+                    url:url,
+                    params:params
+                })
+            },
+            seckill() {
+                this.axiosPostParams("[[@{/prod/doseckill3}]]",{
+                    "prodid":"0101"
+                }).then((response) => {
+                    let respData = response.data;
+                    if (respData) {
+                        alert(respData);
+                        console.log("respData = ",respData);
+                        if ("秒杀还没有开始,请等待" !== respData) {
+                            this.isDisabled = true;
+                        }
+                    }
+                }).catch((error) => {
+                    console.log("error = ",error);
+                }).finally(() => {
+                    console.log("axios最终执行完成!");
+                })
+            }
+        }
+    });
+</script>
+</html>

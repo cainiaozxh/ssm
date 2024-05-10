@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>axios和后端交互</title>
+    <script th:src="@{/script/vue.js}"></script>
+    <script th:src="@{/script/axios.min.js}"></script>
+</head>
+<body>
+<div id="app">
+    <h3>Ajax请求:传递基本类型参数</h3>
+    <a href="javascript:void(0)" @click="ajaxDemo1">Ajax请求1</a>
+
+    <h3>Ajax请求:传递实体类</h3>
+    <a href="javascript:void(0)" @click="ajaxDemo2">Ajax请求2</a>
+
+    <h3>Ajax请求:传递实体类带级联属性(params)(请求参数)</h3>
+    <a href="javascript:void(0)" @click="ajaxDemo3">Ajax请求3</a>
+
+    <h3>Ajax请求:传递实体类带级联属性(data)(json)</h3>
+    <a href="javascript:void(0)" @click="ajaxDemo4">Ajax请求4</a>
+
+    <h3>Ajax请求:传递实体类带级联属性2(json)(Data)</h3>
+
+    <h3>Ajax请求:返回实体类型参数(json)</h3>
+    <a href="javascript:void(0)" @click="ajaxDemo5">Ajax请求5</a>
+</div>
+</body>
+<script>
+    let vm = new Vue({
+        el: "#app",
+        data: {
+
+        },
+        methods: {
+            axiosPostData(url,data) {
+                return new axios({
+                    method:"post",
+                    url:url,
+                    data:data
+                });
+            },
+            axiosPostParams(url,params) {
+                return new axios({
+                    method:"post",
+                    url:url,
+                    params:params
+                });
+            },
+            ajaxDemo1() {
+                this.axiosPostParams("[[@{/ajax/demo1}]]",{
+                    empId:10,
+                    empName:"张三",
+                    empSalary:456.78
+                }).then((response) => {
+                    console.log("ajaxdemo1的返回值");
+                    console.log(response);
+                    console.log(response.data);
+                }).catch((error) => {
+                    console.log("error = ",error);
+                })
+            },
+            ajaxDemo2() {
+                this.axiosPostParams("[[@{/ajax/demo2}]]",{
+                    empId:10,
+                    empName:"李四",
+                    empSalary:456.78
+                }).then((response) => {
+                    console.log("ajaxdemo2的第一次ajax请求");
+                    console.log(response);
+                    console.log(response.data);
+                    return this.axiosPostParams("[[@{/ajax/demo2}]]",{
+                        empId:10,
+                        empName:"王五",
+                        empSalary:888.89
+                    });
+                }).then((response) => {
+                    console.log("ajaxdemo2的第二次ajax请求");
+                    console.log(response);
+                    console.log(response.data);
+                }).catch((error) => {
+                    console.log("error = ",error);
+                }).finally(() => {
+
+                });
+            },
+            ajaxDemo3() {
+                this.axiosPostParams("[[@{/ajax/demo3}]]",{
+                    empId:10,
+                    empName:"李四",
+                    empSalary:888.88,
+                    hireDate:"2024-02-08",
+                    hireDateTime:"2024-02-08 06:30:33",
+                    "dept.deptno":"1001",
+                    "dept.dname":"研发部",
+                }).then((response) => {
+                    console.log("ajaxdemo3的第一次ajax请求");
+                    console.log(response);
+                    console.log(response.data);
+                    return this.axiosPostParams("[[@{/ajax/demo3}]]",{
+                        empId:11,
+                        empName:"张三",
+                        empSalary:888.88,
+                        hireDate:"2024-02-08",
+                        hireDateTime:"2024-02-08 06:30:33",
+                        "dept.deptno":"1002",
+                        "dept.dname":"开发部",
+                    });
+                }).then((response) => {
+                    console.log("ajaxdemo3的第二次ajax请求");
+                    console.log(response);
+                    console.log(response.data);
+                }).catch((error) => {
+                    console.log("error = ",error);
+                }).finally(()=> {
+
+                });
+            },
+            ajaxDemo4() {
+                this.axiosPostData("[[@{/ajax/demo4}]]", {
+                    "empId":10,
+                    "empName":"李四",
+                    "empSalary":888.88,
+                    "hireDate":"2024-02-08",
+                    "hireDateTime":"2024-02-08 06:30:33",
+                    "dept": {
+                        "deptno":"1001",
+                        "dname":"研发部",
+                    }
+                }).then((response) => {
+                    console.log("ajaxdemo4的第一次ajax请求");
+                    console.log(response);
+                    console.log(response.data);
+                    return this.axiosPostData("[[@{/ajax/demo4}]]", {
+                        "empId":11,
+                        "empName":"王五",
+                        "empSalary":999.99,
+                        "hireDate":"2024-01-01",
+                        "hireDateTime":"2024-01-01 12:12:12",
+                        "dept":{
+                            "deptno":"1003",
+                            "dname":"销售部",
+                        }
+                    });
+                }).then((response) => {
+                    console.log("ajaxdemo4的第二次ajax请求");
+                    console.log(response);
+                    console.log(response.data);
+                }).catch((error) => {
+                    console.log("error = ", error);
+                }).finally(() => {
+                    console.log("ajaxdemo4的所有ajax请求结束");
+                })
+            },
+            ajaxDemo5() {
+                this.axiosPostData("[[@{/ajax/demo5}]]", {
+                    "empId":10,
+                    "empName":"李四",
+                    "empSalary":888.88,
+                    "hireDate":"2024-02-08",
+                    "hireDateTime":"2024-02-08 06:30:33",
+                    "dept": {
+                        "deptno":"1001",
+                        "dname":"研发部",
+                    }
+                }).then((response) => {
+                    console.log("ajaxdemo5的第一次ajax请求");
+                    console.log(response);
+                    console.log(response.data);
+                    return this.axiosPostData("[[@{/ajax/demo5}]]", {
+                        "empId":11,
+                        "empName":"王五",
+                        "empSalary":999.99,
+                        "hireDate":"2024-01-01",
+                        "hireDateTime":"2024-01-01 12:12:12",
+                        "dept":{
+                            "deptno":"1003",
+                            "dname":"销售部",
+                        }
+                    });
+                }).then((response) => {
+                    console.log("ajaxdemo5的第二次ajax请求");
+                    console.log(response);
+                    console.log(response.data);
+                }).catch((error) => {
+                    console.log("error = ", error);
+                }).finally(() => {
+                    console.log("ajaxdemo4的所有ajax请求结束");
+                })
+            }
+        }
+    });
+
+</script>
+</html>

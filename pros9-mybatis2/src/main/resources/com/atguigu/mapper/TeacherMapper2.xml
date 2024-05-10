@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.mapper.TeacherMapper2">
+
+    <!--开启单表查表查询的二级缓存-->
+    <cache eviction="LRU"
+           flushInterval="50000"
+           size="512"
+           readOnly="True"></cache>
+    <cache-ref namespace="com.atguigu.mapper.StudentMapper2"/>
+
+    <select id="findTeacherAll_1" resultMap="teacherRM_1" >
+        SELECT
+            t.*,
+            s.*
+        FROM
+            teacher t
+                LEFT JOIN t_s ON t.t_id = t_s.t_id
+                LEFT JOIN student s ON t_s.s_id = s.s_id
+    </select>
+
+    <resultMap id="teacherRM_1" type="Teacher" autoMapping="true">
+        <id property="tId" column="t_id"/>
+        <collection property="students" ofType="Student" autoMapping="true">
+            <id property="sId" column="s_id"/>
+        </collection>
+    </resultMap>
+
+    <select id="findTeacherAll_2" resultMap="teacherRM_2">
+        SELECT
+            t.*,
+            s.*
+        FROM
+            teacher t
+                LEFT JOIN t_s ON t.t_id = t_s.t_id
+                LEFT JOIN student s ON t_s.s_id = s.s_id
+    </select>
+    <resultMap id="teacherRM_2" type="Teacher" autoMapping="true">
+        <id property="tId" column="t_id"/>
+        <collection property="students" ofType="Student" autoMapping="true" resultMap="student"/>
+    </resultMap>
+    <resultMap id="student" type="Student">
+        <id property="sId" column="s_id"/>
+    </resultMap>
+
+</mapper>

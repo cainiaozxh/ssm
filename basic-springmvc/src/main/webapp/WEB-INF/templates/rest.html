@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>restful请求风格</title>
+    <script type="text/javascript" th:src="@{/script/vue.js}"></script>
+</head>
+<body>
+<h3>Restful请求映射:GET</h3>
+<a th:href="@{/employee}">查询所有员工</a><br>
+<a th:href="@{/employee/1}">查询指定编号的员工1</a><br>
+<a th:href="@{/employee/2}">查询指定编号的员工2</a><br>
+<a th:href="@{/employee/zh/18/300.00}">按照姓名和工资查询员工1</a><br>
+<a th:href="@{/employee/li/18/500.00}">按照姓名和工资查询员工2</a><br>
+<h3>Restful请求映射:POST</h3>
+<form th:action="@{/employee/save}" method="post">
+    员工id: <input type="number" name="empId"><br>
+    员工姓名: <input type="text" name="empName"><br>
+    员工年龄: <input type="text" name="empAge"><br>
+    员工薪资: <input type="number" step="0.1" name="empSalary"><br>
+    <input type="submit" value="提交"/>
+</form>
+<h3>Restful请求映射:PUT</h3>
+<form th:action="@{/employee/put}" method="post">
+    <input type="hidden" name="_method" value="put">
+    员工id: <input type="number" name="empId" value="10" readonly onselectable="on"><br>
+    员工姓名: <input type="text" name="empName" value="张三"><br>
+    员工年龄: <input type="text" name="empAge" value="18"><br>
+    员工薪资: <input type="number" step="0.01" name="empSalary" value="2000.45"><br>
+    <input type="submit" value="修改"/>
+</form>
+<br>
+<h3>请求方式:DELETE</h3>
+<div id="app">
+    <a th:href="@{/employee/delete/1}" @click="deleteEmp">删除编号为1的员工</a><br>
+    <a th:href="@{/employee/delete/2}" @click.prevent="confirmDeleteEmp">删除编号为2的员工</a>
+</div>
+<!--通用表单-->
+<form id="form1" method="post">
+    <input type="hidden" name="_method" value="delete">
+</form>
+</body>
+<script>
+    let vm =new Vue({
+        el: "#app",
+        data: {
+
+        },
+        methods: {
+            deleteEmp(event) {
+                //获取通用表单
+                var myForm = document.getElementById("form1");
+                //修改通用表单的action为当前超链接的href
+                myForm.action = event.target.href;
+                //提交表单
+                myForm.submit();
+                //阻止超链接的默认跳转行为
+                event.preventDefault();
+            },
+            confirmDeleteEmp(event) {
+                var flag = window.confirm("您确认要删除该员工吗?");
+                if (flag) {
+                    //获取通用表单
+                    var myForm = document.getElementById("form1");
+                    //修改通用表单action
+                    myForm.action = event.target.href;
+                    //提交表单
+                    myForm.submit();
+                    //阻止超链接的默认跳转行为
+                }
+            }
+        }
+    });
+</script>
+</html>

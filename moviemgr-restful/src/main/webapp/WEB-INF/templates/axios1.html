@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>axios复习</title>
+    <script th:src="@{/script/vue.js}"></script>
+    <script th:src="@{/script/axios.min.js}"></script>
+</head>
+<body>
+<div id="app">
+    <table border="1px" cellspacing="0">
+        <thead>
+        <tr>
+            <th>姓名</th>
+            <th>技能</th>
+            <th>年龄</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="monster in monsters">
+            <td>{{monster.name}}</td>
+            <td>{{monster.skill}}</td>
+            <td>{{monster.age}}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+<script>
+    let vm = new Vue({
+        el: "#app",
+        data: {
+            monsters:[]
+        },
+        methods: {
+            list() {
+                axios.get('http://localhost:8080/restful/data/respdata.json')
+                .then((response) => {
+                    console.log('axios发送第一次ajax请求');
+                    this.monsters = response.data.data.items;
+                    return axios.get('http://localhost:8080/restful/data/respdata.json');
+                }).then((response) => {
+                    console.log('axios发送第二次ajax请求');
+                    console.log(response.data.data.items);
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+            },
+        },
+        //钩子函数,vue对象创建后执行,应该和自定义方法methods并列,而不是放入methods中
+        created() {
+            this.list();
+        }
+    });
+</script>
+</html>

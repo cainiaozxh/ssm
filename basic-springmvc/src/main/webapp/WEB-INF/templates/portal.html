@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+</head>
+<body>
+<h1>首页</h1>
+<!--
+thymeleaf 模板引擎 解析 url地址
+格式:
+th:href="@{/项目下的某个资源}"
+作用:
+解析url地址,在指定的资源前面自动加上web应用程序名字,之后发送请求,@符号会被thymeleaf解析为当前web应用名称名字
+-->
+
+<a href="sayhello">sayHello</a><br/>
+<a th:href="@{/sayhello}">Thymeleaf的sayHello</a>
+<hr>
+<h2>测试@RequestMapping注解匹配方式</h2>
+<a th:href="@{/fruit/apple}">@RequestMapping模糊匹配[apple]</a><br>
+<a th:href="@{/fruit/orange}">@RequestMapping模糊匹配[orange]</a><br>
+<a th:href="@{/fruit/banana}">@RequestMapping模糊匹配[banana]</a>
+<hr>
+<h3>测试@RequestMapping注解限定请求方式</h3>
+<a th:href="@{/emp}">同地址get请求</a>
+<form th:action="@{/emp}" method="post">
+    <input type="submit">同地址POST请求
+</form>
+<hr>
+<h3>测试请求参数-[一名一值]</h3>
+<a th:href="@{/param/one/one(userName='tom')}">一个名字一个值</a><br>
+<a th:href="@{/param/one/one/2(username='jack')}">注解省略的情形</a><br>
+<a th:href="@{/param/one/one/3}">获取请求参数3</a><br>
+<a th:href="@{/param/one/one/4}">获取请求参数4-1</a><br>
+<a th:href="@{/param/one/one/4(username='马云')}">获取请求参数4-2</a><br>
+<a th:href="@{/param/one/one/5}">获取请求参数5-1</a><br>
+<a th:href="@{/param/one/one/4(username='胡叼盘')}">获取请求参数5-2</a><br>
+<hr>
+<h3>测试请求参数-[一名多值]</h3>
+<form th:action="@{/param/getTeams}" method="post">
+    请选择你喜欢的球队:
+    <input type="checkbox" name="team" value="Brazil"/>巴西
+    <input type="checkbox" name="team" value="German"/>德国
+    <input type="checkbox" name="team" value="French"/>法国
+    <input type="checkbox" name="team" value="Holland"/>荷兰
+    <input type="checkbox" name="team" value="Italian"/>意大利
+    <input type="checkbox" name="team" value="China"/>中国
+    <br/>
+    <input type="submit" value="保存"/>
+</form>
+<hr>
+<h3>获取请求参数-[实体类]</h3>
+<form th:action="@{/param/addEmployee}" method="post">
+    姓名: <input type="text" name="empName"/><br/>
+    年龄: <input type="text" name="empAge"/><br/>
+    工资: <input type="text" name="empSalary"/><br/>
+    <input type="submit" value="保存"/>
+</form>
+<hr>
+<h3>获取请求参数：实体类含级联属性</h3>
+<form th:action="@{/param/addStudent}" method="post">
+    姓名：<input type="text" name="stuName"/><br/>
+    学校编号：<input type="text" name="school.schoolNo"/><br/>
+    学校名称：<input type="text" name="school.schoolName"/><br/>
+    课程1编号：<input type="text" name="subjectList[0].subjectId"/><br/>
+    课程1名称：<input type="text" name="subjectList[0].subjectName"/><br/>
+    课程2编号：<input type="text" name="subjectList[1].subjectId"/><br/>
+    课程2名称：<input type="text" name="subjectList[1].subjectName"/><br/>
+    课程A编号：<input type="text" name="subjectArray[0].subjectId"/><br/>
+    课程A名称：<input type="text" name="subjectArray[0].subjectName"/><br/>
+    课程B编号：<input type="text" name="subjectArray[1].subjectId"/><br/>
+    课程B名称：<input type="text" name="subjectArray[1].subjectName"/><br/>
+    MySQL课程成绩：<input type="text" name="scores['mysql']"/><br/>
+    Java课程成绩：<input type="text" name="scores['java']"/><br/>
+    <input type="submit" value="保存"/>
+</form>
+<hr>
+<h3>获取请求头</h3>
+<a th:href="@{/param/getHeaders}">获取请求头</a>
+<hr>
+<h3>获取Cookies信息</h3>
+<a th:href="@{/param/getCookies}">获取Cookies信息</a>
+<br>
+</body>
+</html>

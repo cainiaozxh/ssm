@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.mapper.DeptMapper2">
+
+    <cache eviction="LRU"
+           flushInterval="50000"
+           size="512"
+           readOnly="True"></cache>
+
+    <cache-ref namespace="com.atguigu.mapper.DogMapper2"/>
+
+    <select id="findAllDept" resultType="Dept">
+        SELECT dept_id,dept_name
+        FROM dept
+    </select>
+
+    <select id="findAllDept_1" resultMap="deptRM_1">
+        SELECT
+            dept.*,
+            dog.dog_id,
+            dog.dog_name,
+            dog.age
+        FROM
+            dept
+                LEFT JOIN dog ON dept.dept_id = dog.dept_id
+    </select>
+    <resultMap id="deptRM_1" type="Dept" autoMapping="true">
+        <id property="deptId" column="dept_id"/>
+        <collection property="dogList" ofType="Dog" autoMapping="true">
+            <id property="dogId" column="dog_id"/>
+        </collection>
+    </resultMap>
+
+    <select id="findAllDept_2" resultMap="deptRM_2">
+        SELECT
+            dept.*,
+            dog.dog_id,
+            dog.dog_name,
+            dog.age
+        FROM
+            dept
+                LEFT JOIN dog ON dept.dept_id = dog.dept_id
+    </select>
+    <resultMap id="deptRM_2" type="Dept" autoMapping="true">
+        <id property="deptId" column="dept_id"/>
+        <collection property="dogList" ofType="Dog" autoMapping="true" resultMap="dogRM_1"/>
+    </resultMap>
+
+    <resultMap id="dogRM_1" type="Dog">
+        <id property="dogId" column="dog_id"/>
+    </resultMap>
+
+</mapper>

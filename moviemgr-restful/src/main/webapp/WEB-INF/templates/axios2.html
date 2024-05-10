@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>axios发送ajax请求</title>
+    <script th:src="@{/script/vue.js}"></script>
+    <script th:src="@{/script/axios.min.js}"></script>
+</head>
+<body>
+<div id="app">
+    <h1>{{message}}</h1>
+    <form th:action="@{/}" method="post">
+        电影编号: <input type="text" name="movieId" v-model="movie.movieId" @blur="verifyMovie">
+        电影名: <input type="text" name="movieName" v-model="movie.movieName">
+    </form>
+</div>
+<h2>返回json数据</h2>
+<div id="div02"></div>
+</body>
+<script>
+    let vm = new Vue({
+        el: "#app",
+        data: {
+            message:"使用promise发送ajax请求",
+            movie: {
+                movieId:"",
+                movieName: ""
+            },
+            respdata:""
+        },
+        methods: {
+            verifyMovie() {
+                axios({
+                    method:"get",
+                    url:"movie/getMovieJson",
+                    params:{
+                        "movieId":this.movie.movieId
+                    }
+                }).then((response) => {
+                    console.log("axios发送的ajax请求");
+                    console.log(response);
+                    var div02 = document.getElementById("div02");
+                    this.respdata = response.data;
+                    div02.innerHTML = JSON.stringify(this.respdata);
+                }).catch((error) => {
+                    console.log("异常 = ", error);
+                })
+            },
+        }
+    });
+</script>
+</html>

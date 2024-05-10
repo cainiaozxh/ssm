@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>delete请求</title>
+    <script type="text/javascript" th:src="@{/script/vue.js}"/>
+</head>
+<body>
+<h3>请求方式:DELETE</h3>
+<div id="app">
+    <a th:href="@{/employee/delete/1}" @click="deleteEmp">删除编号为1的员工</a><br>
+    <a th:href="@{/employee/delete/2}" @click.prevent="confirmDeleteEmp">删除编号为2的员工</a>
+</div>
+<!--通用表单-->
+<form id="form1" method="post">
+    <input type="hidden" name="_method" value="delete">
+</form>
+</body>
+<script type="text/javascript">
+    let vm =new Vue({
+        el: "#app",
+        data: {
+
+        },
+        methods: {
+            deleteEmp(event) {
+                //获取通用表单
+                var myForm = document.getElementById("form1");
+                //修改通用表单的action为当前超链接的href
+                myForm.action = event.target.href;
+                //提交表单
+                myForm.submit();
+                //阻止超链接的默认跳转行为
+                event.target.preventDefault();
+            },
+            confirmDeleteEmp(event) {
+                var flag = window.confirm("您确认要删除该员工吗?");
+                if (flag) {
+                    //获取通用表单
+                    var myForm = document.getElementById("form1");
+                    //修改通用表单action
+                    myForm.action = event.target.href;
+                    //提交表单
+                    myForm.submit();
+                    //阻止超链接的默认跳转行为
+                    event.href.preventDefault();
+                }
+            }
+        }
+    });
+
+</script>
+</html>
